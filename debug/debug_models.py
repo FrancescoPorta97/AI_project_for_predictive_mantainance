@@ -1,0 +1,50 @@
+def model_conv_lstm_v3(Tx,nh,nw,nchan):    
+  drop=0.05
+  inputs =Input(shape=(Tx,nh,nw,nchan))
+  X = TimeDistributed(Conv2D(11, 5, 2,padding="same",activation='relu'))(inputs)
+  X=Dropout(drop)(X)
+  X=BatchNormalization()(X)
+  X=TimeDistributed(MaxPool2D(2))(X)
+  X=TimeDistributed(Conv2D(15,3,1, activation='relu'))(X)
+  X=Dropout(drop)(X)
+  X=BatchNormalization()(X)
+  X=TimeDistributed(MaxPool2D(3))(X)
+  X=TimeDistributed(Conv2D(22,3,2, activation='tanh'))(X)
+  X=Dropout(drop)(X)
+  X=BatchNormalization()(X)
+  X = TimeDistributed(MaxPool2D(2))(X)
+  X=TimeDistributed(Flatten())(X)
+  X=LSTM(128,return_sequences=True)(X)
+  X=BatchNormalization()(X)
+  X=Dropout(0.025)(X)
+  X = TimeDistributed(Dense(6, activation = "relu"))(X)
+  X=BatchNormalization()(X)
+  X=Dropout(0)(X)
+  outputs = TimeDistributed(Dense(1, activation = "linear"))(X)
+
+  model = keras.Model(inputs=inputs, outputs=outputs)
+  return model
+
+def model_conv_lstm_v4(Tx,nh,nw,nchan):    
+  drop=0.05
+  inputs =Input(shape=(Tx,nh,nw,nchan))
+  X = TimeDistributed(Conv2D(10, 3, 1, activation='relu'))(inputs)
+  X=Dropout(drop)(X)
+  X=BatchNormalization()(X)
+  X=TimeDistributed(MaxPool2D(2))(X)
+  X=TimeDistributed(Conv2D(15,3,2, activation='relu'))(X)
+  X=Dropout(drop)(X)
+  X=BatchNormalization()(X)
+  X=TimeDistributed(MaxPool2D(2))(X)
+  X=TimeDistributed(Conv2D(20,3,3, activation='relu'))(X)
+  X=Dropout(drop)(X)
+  X=BatchNormalization()(X)
+  X = TimeDistributed(MaxPool2D(3))(X)
+  X=TimeDistributed(Flatten())(X)
+  X=LSTM(64,return_sequences=True)(X)
+  X=BatchNormalization()(X)
+  X=Dropout(0)(X)
+  outputs = TimeDistributed(Dense(1, activation = "linear"))(X)
+
+  model = keras.Model(inputs=inputs, outputs=outputs)
+  return model
